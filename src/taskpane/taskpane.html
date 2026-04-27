@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Range Screenshot</title>
+
+    <!-- La bibliothèque Office JS (obligatoire) -->
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+
+    <style>
+        /* ---- Style général ---- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f3f2f1;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #0078d4;
+            margin-bottom: 6px;
+            font-size: 18px;
+        }
+
+        p.subtitle {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        /* ---- Boutons ---- */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: background 0.2s;
+        }
+
+        .btn-primary { background: #0078d4; color: white; }
+        .btn-primary:hover { background: #005a9e; }
+        .btn-primary:disabled { background: #aaa; cursor: not-allowed; }
+
+        .btn-success { background: #107c10; color: white; display: none; }
+        .btn-success:hover { background: #0a5a0a; }
+
+        .btn-copy { background: #8764b8; color: white; display: none; }
+        .btn-copy:hover { background: #6b4f9a; }
+
+        /* ---- Zone de statut ---- */
+        #status {
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 14px;
+            display: none;
+        }
+        #status.info    { background: #dde7f5; color: #0052a3; display: block; }
+        #status.success { background: #dff0d8; color: #276928; display: block; }
+        #status.error   { background: #fde8e8; color: #a80000; display: block; }
+
+        /* ---- Prévisualisation de l'image ---- */
+        #previewBox {
+            display: none;
+            margin-bottom: 14px;
+        }
+
+        #previewBox p {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        #preview {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* ---- Zone base64 (lien à copier) ---- */
+        #base64Box {
+            display: none;
+            margin-bottom: 10px;
+        }
+
+        #base64Box p {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 70px;
+            font-size: 10px;
+            font-family: monospace;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 6px;
+            resize: vertical;
+            background: #f9f9f9;
+        }
+
+        /* ---- Instructions Word ---- */
+        #wordInstructions {
+            display: none;
+            background: #fff4ce;
+            border-left: 4px solid #f0a500;
+            padding: 12px;
+            border-radius: 0 6px 6px 0;
+            font-size: 12px;
+            color: #444;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>📸 Range Screenshot</h2>
+        <p class="subtitle">Sélectionne une plage dans Excel, puis capture-la en image.</p>
+
+        <!-- BOUTON PRINCIPAL -->
+        <button class="btn btn-primary" id="captureBtn">
+            📷 Capturer la sélection
+        </button>
+
+        <!-- MESSAGE DE STATUT -->
+        <div id="status"></div>
+
+        <!-- PRÉVISUALISATION -->
+        <div id="previewBox">
+            <p>👁️ Aperçu :</p>
+            <img id="preview" alt="Aperçu de la plage capturée" />
+        </div>
+
+        <!-- BOUTONS POST-CAPTURE -->
+        <button class="btn btn-success" id="insertWordBtn">
+            📄 Insérer dans Word (si ouvert)
+        </button>
+
+        <button class="btn btn-copy" id="copyBase64Btn">
+            📋 Copier l'image (base64)
+        </button>
+
+        <!-- CODE BASE64 -->
+        <div id="base64Box">
+            <p>🔗 Code image (tu peux aussi copier depuis ici) :</p>
+            <textarea id="base64Output" readonly></textarea>
+        </div>
+
+        <!-- INSTRUCTIONS POUR WORD -->
+        <div id="wordInstructions">
+            <strong>💡 Comment coller dans Word :</strong><br>
+            1. Clique sur "📋 Copier l'image"<br>
+            2. Va dans Word<br>
+            3. Fais <strong>Ctrl+V</strong> (Windows) ou <strong>Cmd+V</strong> (Mac)<br>
+            → L'image s'insère directement !
+        </div>
+    </div>
+
+    <!-- Notre script -->
+    <script src="taskpane.js"></script>
+</body>
+</html>
